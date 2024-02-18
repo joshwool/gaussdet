@@ -21,24 +21,17 @@ void detRec (float *(&rows)[size], int matrix_shape) {
     LeastZeros *tail = &head;
 
     for (size_t i = first_cell; i < size; i++) {
-        size_t zeros = 0;
-        for (size_t j = first_cell; j < size; j++) {
-            if (*(rows[i] + j) != 0) {
-                break;
+        if (*(rows[i] + first_cell) != 0) {
+            if (!head.row) {
+                head.row = &rows[i];
+                head.next = nullptr;
+                tail = &head;
             }
-            zeros++;
+            else {
+                tail->next = std::unique_ptr<LeastZeros>(new LeastZeros{&rows[i], nullptr});
+                tail = tail->next.get();
+            }
         }
-        if (zeros < least_zeros) {
-            least_zeros = zeros;
-            head.row = &rows[i];
-            head.next = nullptr;
-            tail = &head;
-        }
-        else if (zeros == least_zeros) {
-            tail->next = std::unique_ptr<LeastZeros>(new LeastZeros{&rows[i], nullptr});
-            tail = tail->next.get();
-        }
-
     }
 
     if (*head.row != rows[first_cell]) {
