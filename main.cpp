@@ -3,18 +3,12 @@
 
 float sign = 1;
 
-struct LeastZeros {
-    float **row;
-    std::unique_ptr<LeastZeros> next;
-};
-
 template<size_t size>
 void detRec (float *(&rows)[size], int matrix_shape) {
     if (matrix_shape == 1) {
         return;
     }
 
-    size_t least_zeros = size;
     size_t first_cell = size-matrix_shape;
 
     float **top = nullptr;
