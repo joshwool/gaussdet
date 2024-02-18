@@ -17,44 +17,31 @@ void detRec (float *(&rows)[size], int matrix_shape) {
     size_t least_zeros = size;
     size_t first_cell = size-matrix_shape;
 
-    LeastZeros head {nullptr};
-    LeastZeros *tail = &head;
+    float **top = nullptr;
 
     for (size_t i = first_cell; i < size; i++) {
         if (*(rows[i] + first_cell) != 0) {
-            if (!head.row) {
-                head.row = &rows[i];
-                head.next = nullptr;
-                tail = &head;
+            if (!top) {
+                top = &rows[i];
             }
             else {
-                tail->next = std::unique_ptr<LeastZeros>(new LeastZeros{&rows[i], nullptr});
-                tail = tail->next.get();
+                float multi = (-*(rows[i] + first_cell)) / *(*top + first_cell);
+
+                for (size_t j = first_cell; j < size; j++) {
+                    *(rows[i] + j) += (multi * *(*top + j));
+                    if (-0.00001 < *(rows[i] + j) && *(rows[i] + j) < 0.00001) {
+                        *(rows[i] + j) = 0;
+                    }
+                }
             }
         }
     }
 
-    if (*head.row != rows[first_cell]) {
+    if (*top != rows[first_cell]) {
         float *temp = rows[first_cell];
-        rows[first_cell] = *head.row;
-        *head.row = temp;
-        head.row = &rows[first_cell];
+        rows[first_cell] = *top;
+        *top = temp;
         sign *= -1;
-    }
-
-    LeastZeros *current = &head;
-
-    while (current->next) {
-        current = (current->next).get();
-
-        float multi = (-*(*(current->row) + first_cell)) / *(*(head.row) + first_cell);
-
-        for (size_t j = first_cell; j < size; j++) {
-            *(*(current->row) + j) += (multi * *(*(head.row) + j));
-            if (-0.00001 < *(*(current->row) + j) && *(*(current->row) + j) < 0.00001) {
-                *(*(current->row) + j) = 0;
-            }
-        }
     }
 
     for (size_t i = 0; i < size; i++) {
