@@ -31,7 +31,7 @@ void detRec (float *(&rows)[size], int matrix_shape) {
         }
     }
 
-    if (*top != rows[first_cell]) {
+    if (top != nullptr && *top != rows[first_cell]) {
         float *temp = rows[first_cell];
         rows[first_cell] = *top;
         *top = temp;
@@ -92,12 +92,11 @@ float determinant(float matrix[size][size]) {
 
 int main() {
 
-    float matrix[5][5] = {
-        {0, 6, -2, -1, 5},
-        {0, 0, 0, -9, -7},
-        {0, 15, 35, 0, 0},
-        {0, -1, -11, -2, 1},
-        {-2, -2, 3, 0, -2}
+    float matrix[4][4] = {
+        {-1, 2, 1, 2},
+        {2, 1, 0, 1},
+        {1, 3, 1, 3},
+        {-2, 4, 2, 4}
     };
 
     std::cout << determinant(matrix) << std::endl;
